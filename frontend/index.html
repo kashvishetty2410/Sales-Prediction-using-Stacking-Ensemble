@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Prediction System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sales Prediction System</h1>
+            <p>Using Stacking Ensemble (Linear Regression + Random Forest + SVR)</p>
+        </header>
+
+        <main>
+            <form id="predictionForm">
+                <div class="form-group">
+                    <label for="shipMode">Ship Mode</label>
+                    <select id="shipMode" name="ship_mode" required>
+                        <option value="">Select Ship Mode</option>
+                        <option value="Standard Class">Standard Class</option>
+                        <option value="Second Class">Second Class</option>
+                        <option value="First Class">First Class</option>
+                        <option value="Same Day">Same Day</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="segment">Segment</label>
+                    <select id="segment" name="segment" required>
+                        <option value="">Select Segment</option>
+                        <option value="Consumer">Consumer</option>
+                        <option value="Corporate">Corporate</option>
+                        <option value="Home Office">Home Office</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" required>
+                        <option value="">Select Category</option>
+                        <option value="Furniture">Furniture</option>
+                        <option value="Office Supplies">Office Supplies</option>
+                        <option value="Technology">Technology</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="subCategory">Sub-Category</label>
+                    <select id="subCategory" name="sub_category" required>
+                        <option value="">Select Sub-Category</option>
+                        <!-- Chairs -->
+                        <option value="Chairs">Chairs</option>
+                        <!-- Tables -->
+                        <option value="Tables">Tables</option>
+                        <!-- Bookcases -->
+                        <option value="Bookcases">Bookcases</option>
+                        <!-- Storage -->
+                        <option value="Storage">Storage</option>
+                        <!-- Binders -->
+                        <option value="Binders">Binders</option>
+                        <!-- Paper -->
+                        <option value="Paper">Paper</option>
+                        <!-- Phones -->
+                        <option value="Phones">Phones</option>
+                        <!-- Accessories -->
+                        <option value="Accessories">Accessories</option>
+                        <!-- Others -->
+                        <option value="Furnishings">Furnishings</option>
+                        <option value="Labels">Labels</option>
+                        <option value="Envelopes">Envelopes</option>
+                        <option value="Appliances">Appliances</option>
+                        <option value="Art">Art</option>
+                        <option value="Fasteners">Fasteners</option>
+                        <option value="Machines">Machines</option>
+                        <option value="Supplies">Supplies</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="predict-btn">Predict Sales</button>
+            </form>
+
+            <div id="result" class="result" style="display: none;">
+                <h2>Prediction Result</h2>
+                <div class="prediction-value">
+                    <span class="label">Predicted Sales:</span>
+                    <span class="value" id="salesValue">$0.00</span>
+                </div>
+                <p class="model-info">Model: Stacking Ensemble (Average)</p>
+            </div>
+
+            <div id="error" class="error" style="display: none;">
+                <p>Error: <span id="errorMessage"></span></p>
+            </div>
+
+            <div class="loading" id="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Predicting...</p>
+            </div>
+        </main>
+
+        <footer>
+            <p>Sales Prediction using Stacking Ensemble</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

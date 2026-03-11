@@ -27,14 +27,18 @@ print(data.head())
 # Basic preprocessing
 # -----------------------------
 
-# Drop unnecessary columns
+# Drop unnecessary columns (IDs and high-cardinality columns that add noise)
 data = data.drop(columns=[
     "Row ID",
     "Order ID",
     "Customer ID",
     "Customer Name",
     "Product ID",
-    "Product Name"
+    "Product Name",
+    "Country",        # Only one value - United States
+    "Postal Code",    # High cardinality - adds noise
+    "City",           # High cardinality - adds noise
+    "State"           # High cardinality - adds noise
 ])
 
 print("\nColumns after dropping unnecessary ones:")
@@ -47,6 +51,9 @@ data["Ship Date"] = pd.to_datetime(data["Ship Date"], dayfirst=True)
 
 
 # Extract useful features
+# Days to ship - important signal for sales prediction
+data["days_to_ship"] = (data["Ship Date"] - data["Order Date"]).dt.days
+
 data["Order_Year"] = data["Order Date"].dt.year
 data["Order_Month"] = data["Order Date"].dt.month
 
@@ -62,14 +69,15 @@ print(data.head())
 
 
 # -----------------------------
-# Encode categorical columns
+# Encode categorical columns using one-hot encoding (consistent with LR)
 # -----------------------------
-label_encoder = LabelEncoder()
 
-categorical_cols = data.select_dtypes(include="object").columns
+# One-hot encode categorical columns
+cat_cols = ["Ship Mode", "Segment", "Region", "Category", "Sub-Category"]
+cat_cols = [c for c in cat_cols if c in data.columns]
 
-for col in categorical_cols:
-    data[col] = label_encoder.fit_transform(data[col])
+print(f"[INFO] One-hot encoding columns: {cat_cols}")
+data = pd.get_dummies(data, columns=cat_cols, drop_first=True)
 
 print("\nDataset after encoding:")
 print(data.head())
@@ -184,13 +192,25 @@ plt.show()
 
 
 # -----------------------------
-# Save predictions to CSV
+# Generate predictions
 # -----------------------------
-results = pd.DataFrame({
-    "Actual_Sales": y_test,
-    "Predicted_Sales": y_pred
-})
+train_preds = rf_model.predict(X_train)
+test_preds = rf_model.predict(X_test)
 
-results.to_csv("rf_predictions.csv", index=False)
 
-print("\nPredictions saved to rf_predictions.csv")
+# -----------------------------
+# Save predictions for stacking
+# -----------------------------
+import os
+
+os.makedirs("outputs/predictions", exist_ok=True)
+
+pd.DataFrame({"rf_pred": train_preds}).to_csv(
+    "outputs/predictions/rf_predictions_train.csv", index=False
+)
+
+pd.DataFrame({"rf_pred": test_preds}).to_csv(
+    "outputs/predictions/rf_predictions_test.csv", index=False
+)
+
+print("\nRandom Forest predictions saved for stacking.")
